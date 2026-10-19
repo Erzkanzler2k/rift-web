@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rift — в браузере</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <h1 class="brand">Rift</h1>
+      <p class="peer" id="peer-id">загрузка…</p>
+
+      <details id="identity">
+        <summary>Кто я</summary>
+        <label class="field">
+          <span>ник</span>
+          <input id="nickname" type="text" placeholder="придумайте ник" spellcheck="false" />
+        </label>
+        <button id="save-nickname" type="button">Сохранить</button>
+        <p class="muted" id="nickname-status"></p>
+      </details>
+
+      <div class="new-chat">
+        <input id="peer-input" type="text" placeholder="адрес собеседника" spellcheck="false" />
+        <button id="connect" type="button">Подключиться</button>
+      </div>
+      <p class="error" id="error"></p>
+
+      <h2>Чаты</h2>
+      <ul id="rooms" class="rooms"></ul>
+    </aside>
+
+    <main id="chat">
+      <header class="chat-header">
+        <h2 id="chat-title">Выберите чат</h2>
+        <p class="muted" id="status">подключение…</p>
+      </header>
+      <ol id="messages" class="messages"></ol>
+      <form id="composer" class="composer">
+        <input id="message" type="text" placeholder="Сообщение" autocomplete="off" />
+        <button type="submit">Отправить</button>
+      </form>
+    </main>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
