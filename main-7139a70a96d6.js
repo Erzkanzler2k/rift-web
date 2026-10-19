@@ -12,7 +12,7 @@ import init, {
   nickname,
   set_nickname,
   profile,
-} from "./pkg/rift_wasm.js";
+} from "./pkg-7139a70a96d6/rift_wasm.js";
 
 const els = {
   peerId: document.getElementById("peer-id"),
@@ -34,6 +34,19 @@ const els = {
 /** Показывает ошибку в окне. Пустая строка убирает её. */
 function showError(text) {
   els.error.textContent = text || "";
+}
+
+/**
+ * Приводит ошибку к читаемому тексту.
+ *
+ * Ошибка из ядра приходит объектом, а не строкой. Обычное `String(error)`
+ * давало бы «[object Object]» - человеку не сказать ничего.
+ */
+function errorText(error) {
+  if (!error) return "";
+  if (typeof error === "string") return error;
+  if (typeof error.message === "string" && error.message) return error.message;
+  return String(error);
 }
 
 /** Список чатов: имя собеседника -> отображаемое имя. */
@@ -74,7 +87,7 @@ els.saveNickname.addEventListener("click", async () => {
     els.nicknameStatus.textContent = `ник: ${name}`;
     showError("");
   } catch (error) {
-    showError(String(error));
+    showError(errorText(error));
   }
 });
 
@@ -96,7 +109,7 @@ els.connect.addEventListener("click", async () => {
     renderRooms();
     els.status.textContent = "подключено";
   } catch (error) {
-    showError(String(error));
+    showError(errorText(error));
   } finally {
     els.connect.disabled = false;
   }
@@ -131,7 +144,7 @@ async function pump() {
     try {
       event = await next_event(1000);
     } catch (error) {
-      showError(String(error));
+      showError(errorText(error));
       return;
     }
     if (!event) continue;
