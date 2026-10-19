@@ -11,10 +11,12 @@ import init, {
   next_event,
   nickname,
   set_nickname,
+  profile,
 } from "./pkg/rift_wasm.js";
 
 const els = {
   peerId: document.getElementById("peer-id"),
+  profile: document.getElementById("profile"),
   nickname: document.getElementById("nickname"),
   saveNickname: document.getElementById("save-nickname"),
   nicknameStatus: document.getElementById("nickname-status"),
@@ -157,6 +159,9 @@ async function main() {
   }
 
   els.peerId.textContent = peer_id();
+  // Профиль виден явно: личность лежит в хранилище браузера, а оно общее
+  // для всех вкладок сайта. Второй человек - это вкладка с ?profile=2.
+  els.profile.textContent = `профиль: ${profile()}`;
 
   const saved = nickname();
   if (saved) {

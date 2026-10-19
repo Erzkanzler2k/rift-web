@@ -38,6 +38,12 @@ export function nickname(): string | undefined;
 export function peer_id(): string;
 
 /**
+ * Имя текущего профиля: интерфейс показывает его, чтобы человек видел,
+ * в каком профиле он находится.
+ */
+export function profile(): string;
+
+/**
  * Проверка, что модуль загрузился и криптография на месте.
  */
 export function self_check(): boolean;
@@ -64,15 +70,16 @@ export interface InitOutput {
     readonly next_event: (a: number) => any;
     readonly nickname: () => [number, number, number, number];
     readonly peer_id: () => [number, number, number, number];
+    readonly profile: () => [number, number];
     readonly self_check: () => number;
     readonly set_nickname: (a: number, b: number) => [number, number];
     readonly start: () => any;
     readonly weberror_message: (a: number) => [number, number];
-    readonly wasm_bindgen_a27e486965d9a9ff___closure__destroy___dyn_core_608f92abc48d28da___ops__function__FnMut__web_sys_b262037b525d348___features__gen_CloseEvent__CloseEvent____Output_______: (a: number, b: number) => void;
+    readonly wasm_bindgen_a27e486965d9a9ff___closure__destroy___dyn_core_608f92abc48d28da___ops__function__FnMut__web_sys_2dbd8a0391285ca7___features__gen_CloseEvent__CloseEvent____Output_______: (a: number, b: number) => void;
     readonly wasm_bindgen_a27e486965d9a9ff___closure__destroy___dyn_core_608f92abc48d28da___ops__function__FnMut__wasm_bindgen_a27e486965d9a9ff___JsValue____Output_______: (a: number, b: number) => void;
     readonly wasm_bindgen_a27e486965d9a9ff___closure__destroy___dyn_core_608f92abc48d28da___ops__function__FnMut_____Output_______: (a: number, b: number) => void;
     readonly wasm_bindgen_a27e486965d9a9ff___convert__closures_____invoke___wasm_bindgen_a27e486965d9a9ff___JsValue__wasm_bindgen_a27e486965d9a9ff___JsValue_____: (a: number, b: number, c: any, d: any) => void;
-    readonly wasm_bindgen_a27e486965d9a9ff___convert__closures_____invoke___web_sys_b262037b525d348___features__gen_CloseEvent__CloseEvent_____: (a: number, b: number, c: any) => void;
+    readonly wasm_bindgen_a27e486965d9a9ff___convert__closures_____invoke___web_sys_2dbd8a0391285ca7___features__gen_CloseEvent__CloseEvent_____: (a: number, b: number, c: any) => void;
     readonly wasm_bindgen_a27e486965d9a9ff___convert__closures_____invoke___wasm_bindgen_a27e486965d9a9ff___JsValue_____: (a: number, b: number, c: any) => void;
     readonly wasm_bindgen_a27e486965d9a9ff___convert__closures_____invoke______: (a: number, b: number) => void;
     readonly __wbindgen_malloc: (a: number, b: number) => number;
