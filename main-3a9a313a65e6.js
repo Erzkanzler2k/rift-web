@@ -7,7 +7,7 @@
 // Номер сборки подставляет publish.mjs. Он виден в интерфейсе: по нему
 // сразу видно, какая версия загружена, - без этого приходилось гадать,
 // почему у человека старое поведение при новом файле на сервере.
-const BUILD_ID = "ecd5ca2d6dab";
+const BUILD_ID = "3a9a313a65e6";
 
 import init, {
   start,
@@ -20,7 +20,7 @@ import init, {
   send_message,
   messages,
   rooms as rooms_,
-} from "./pkg-ecd5ca2d6dab/rift_wasm.js";
+} from "./pkg-3a9a313a65e6/rift_wasm.js";
 
 const els = {
   peerId: document.getElementById("peer-id"),
@@ -149,10 +149,11 @@ els.connect.addEventListener("click", async () => {
     // Адрес приводится к виду, который понимает WebSocket-транспорт:
     // /ip4/host/tcp/port/ws
     const normalized = normalizeAddress(address);
-    await connect(normalized);
-    const peer = peer_id();
-    rooms.set(peer, peer);
-    renderRooms();
+    // connect возвращает peer ID собеседника: он узнаётся из рукопожатия.
+    const peer = await connect(normalized);
+    activeRoom = peer;
+    els.chatTitle.textContent = peer;
+    refreshRooms();
     els.status.textContent = "подключено";
   } catch (error) {
     showError(errorText(error));
@@ -253,7 +254,11 @@ async function main() {
   }
 
   els.status.textContent = "готов";
+  refreshRooms();
   pump();
+  // Чаты появляются после рукопожатия, а оно занимает секунды: обновляем
+  // список, пока он не перестанет меняться.
+  setInterval(refreshRooms, 2000);
 }
 
 main();
