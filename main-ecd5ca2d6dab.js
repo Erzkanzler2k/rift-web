@@ -7,7 +7,7 @@
 // Номер сборки подставляет publish.mjs. Он виден в интерфейсе: по нему
 // сразу видно, какая версия загружена, - без этого приходилось гадать,
 // почему у человека старое поведение при новом файле на сервере.
-const BUILD_ID = "53c50187100a";
+const BUILD_ID = "ecd5ca2d6dab";
 
 import init, {
   start,
@@ -20,7 +20,7 @@ import init, {
   send_message,
   messages,
   rooms as rooms_,
-} from "./pkg-53c50187100a/rift_wasm.js";
+} from "./pkg-ecd5ca2d6dab/rift_wasm.js";
 
 const els = {
   peerId: document.getElementById("peer-id"),
