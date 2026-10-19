@@ -4,6 +4,11 @@
 // показывает интерфейс и передаёт команды ядру. Никакого своей криптографии
 // здесь нет и быть не должно - иначе браузер и приложение разойдутся.
 
+// Номер сборки подставляет publish.mjs. Он виден в интерфейсе: по нему
+// сразу видно, какая версия загружена, - без этого приходилось гадать,
+// почему у человека старое поведение при новом файле на сервере.
+const BUILD_ID = "679a5ea2443c";
+
 import init, {
   start,
   peer_id,
@@ -12,11 +17,12 @@ import init, {
   nickname,
   set_nickname,
   profile,
-} from "./pkg-7139a70a96d6/rift_wasm.js";
+} from "./pkg-679a5ea2443c/rift_wasm.js";
 
 const els = {
   peerId: document.getElementById("peer-id"),
   profile: document.getElementById("profile"),
+  build: document.getElementById("build"),
   nickname: document.getElementById("nickname"),
   saveNickname: document.getElementById("save-nickname"),
   nicknameStatus: document.getElementById("nickname-status"),
@@ -175,6 +181,7 @@ async function main() {
   // Профиль виден явно: личность лежит в хранилище браузера, а оно общее
   // для всех вкладок сайта. Второй человек - это вкладка с ?profile=2.
   els.profile.textContent = `профиль: ${profile()}`;
+  els.build.textContent = `сборка: ${BUILD_ID}`;
 
   const saved = nickname();
   if (saved) {
