@@ -3,11 +3,14 @@
 export const memory: WebAssembly.Memory;
 export const __wbg_weberror_free: (a: number, b: number) => void;
 export const connect: (a: number, b: number) => any;
+export const messages: (a: number, b: number) => [number, number, number, number];
 export const next_event: (a: number) => any;
 export const nickname: () => [number, number, number, number];
 export const peer_id: () => [number, number, number, number];
 export const profile: () => [number, number];
+export const rooms: () => [number, number, number, number];
 export const self_check: () => number;
+export const send_message: (a: number, b: number, c: number, d: number) => any;
 export const set_nickname: (a: number, b: number) => [number, number];
 export const start: () => any;
 export const weberror_message: (a: number) => [number, number];

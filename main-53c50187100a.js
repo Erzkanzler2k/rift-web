@@ -7,7 +7,7 @@
 // Номер сборки подставляет publish.mjs. Он виден в интерфейсе: по нему
 // сразу видно, какая версия загружена, - без этого приходилось гадать,
 // почему у человека старое поведение при новом файле на сервере.
-const BUILD_ID = "679a5ea2443c";
+const BUILD_ID = "53c50187100a";
 
 import init, {
   start,
@@ -17,7 +17,10 @@ import init, {
   nickname,
   set_nickname,
   profile,
-} from "./pkg-679a5ea2443c/rift_wasm.js";
+  send_message,
+  messages,
+  rooms as rooms_,
+} from "./pkg-53c50187100a/rift_wasm.js";
 
 const els = {
   peerId: document.getElementById("peer-id"),
@@ -59,18 +62,55 @@ function errorText(error) {
 const rooms = new Map();
 let activeRoom = null;
 
+/**
+ * Обновляет список чатов из ядра.
+ *
+ * Список приходит из модуля чата: там комнаты, которые действительно созданы
+ * по рукопожатию, а не просто те, кому мы нажали «подключиться».
+ */
+function refreshRooms() {
+  let list = [];
+  try {
+    list = JSON.parse(rooms_() || "[]");
+  } catch (error) {
+    showError(errorText(error));
+    return;
+  }
+  rooms.clear();
+  for (const item of list) {
+    rooms.set(item.peer, { title: item.peer, room: item.room });
+  }
+  renderRooms();
+}
+
 function renderRooms() {
   els.rooms.replaceChildren();
-  for (const [id, title] of rooms) {
-    const item = document.createElement("li");
-    item.textContent = title;
-    if (id === activeRoom) item.classList.add("active");
-    item.addEventListener("click", () => {
-      activeRoom = id;
-      els.chatTitle.textContent = title;
+  for (const [peer, item] of rooms) {
+    const entry = document.createElement("li");
+    entry.textContent = item.title;
+    if (peer === activeRoom) entry.classList.add("active");
+    entry.addEventListener("click", () => {
+      activeRoom = peer;
+      els.chatTitle.textContent = item.title;
       renderRooms();
+      renderMessages(item.room);
     });
-    els.rooms.append(item);
+    els.rooms.append(entry);
+  }
+}
+
+/** Показывает историю комнаты. */
+function renderMessages(room) {
+  els.messages.replaceChildren();
+  let list = [];
+  try {
+    list = JSON.parse(messages(room) || "[]");
+  } catch (error) {
+    showError(errorText(error));
+    return;
+  }
+  for (const item of list) {
+    addMessage(item.body, item.sender === "я");
   }
 }
 
@@ -133,14 +173,30 @@ function normalizeAddress(address) {
     const url = new URL(trimmed);
     const host = url.hostname;
     const port = url.port || "80";
-    return `/ip4/${host}/tcp/${port}/ws`;
+    // Путь в multiaddr у WebSocket задаётся особым протоколом: обычный
+    // /ws всегда означает корень.
+    const path = url.pathname && url.pathname !== "/" ? url.pathname : "";
+    const scheme = path ? "x-parity-ws" : "ws";
+    return `/ip4/${host}/tcp/${port}/${scheme}${path}`;
   }
   return trimmed;
 }
 
-els.composer.addEventListener("submit", (event) => {
+els.composer.addEventListener("submit", async (event) => {
   event.preventDefault();
-  showError("отправка появится вместе с MLS-сессией");
+  const text = els.messageInput.value.trim();
+  if (!text) return;
+  if (!activeRoom) {
+    showError("сначала выберите чат");
+    return;
+  }
+  try {
+    await send_message(activeRoom, text);
+    els.messageInput.value = "";
+    showError("");
+  } catch (error) {
+    showError(errorText(error));
+  }
 });
 
 /** Читает сетевые события и обновляет окно. */
@@ -158,6 +214,13 @@ async function pump() {
       els.status.textContent = "подключено";
     } else if (event.startsWith("disconnected:")) {
       els.status.textContent = "соединение потеряно";
+    } else if (event.startsWith("message:")) {
+      // Пришло сообщение: обновляем список чатов и открытый чат.
+      const [, room, peer] = event.split(":");
+      refreshRooms();
+      if (activeRoom === peer) {
+        renderMessages(room);
+      }
     }
   }
 }

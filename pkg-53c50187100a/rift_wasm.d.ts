@@ -20,6 +20,13 @@ export class WebError {
 export function connect(address: string): Promise<string>;
 
 /**
+ * История комнаты: сообщения в порядке отправки.
+ *
+ * Возвращается JSON, чтобы интерфейс не разбирал формат сам.
+ */
+export function messages(room: string): string;
+
+/**
  * Читает один сетевой кадр.
  *
  * JavaScript вызывает это по кругу: кадр либо приходит, либо истекает
@@ -44,9 +51,22 @@ export function peer_id(): string;
 export function profile(): string;
 
 /**
+ * Комнаты, с кем уже есть общий ключ.
+ */
+export function rooms(): string;
+
+/**
  * Проверка, что модуль загрузился и криптография на месте.
  */
 export function self_check(): boolean;
+
+/**
+ * Отправляет сообщение собеседнику.
+ *
+ * Комната появляется после рукопожатия: пока обе стороны не обменялись
+ * key package и приглашением, шифровать нечем.
+ */
+export function send_message(peer: string, text: string): Promise<void>;
 
 /**
  * Сохраняет ник.
@@ -67,11 +87,14 @@ export interface InitOutput {
     readonly memory: WebAssembly.Memory;
     readonly __wbg_weberror_free: (a: number, b: number) => void;
     readonly connect: (a: number, b: number) => any;
+    readonly messages: (a: number, b: number) => [number, number, number, number];
     readonly next_event: (a: number) => any;
     readonly nickname: () => [number, number, number, number];
     readonly peer_id: () => [number, number, number, number];
     readonly profile: () => [number, number];
+    readonly rooms: () => [number, number, number, number];
     readonly self_check: () => number;
+    readonly send_message: (a: number, b: number, c: number, d: number) => any;
     readonly set_nickname: (a: number, b: number) => [number, number];
     readonly start: () => any;
     readonly weberror_message: (a: number) => [number, number];
