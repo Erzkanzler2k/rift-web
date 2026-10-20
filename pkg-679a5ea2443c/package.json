@@ -1,0 +1,15 @@
+{
+  "name": "rift-wasm",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "rift_wasm_bg.wasm",
+    "rift_wasm.js",
+    "rift_wasm.d.ts"
+  ],
+  "main": "rift_wasm.js",
+  "types": "rift_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
